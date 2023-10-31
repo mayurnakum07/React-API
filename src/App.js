@@ -1,23 +1,19 @@
-import logo from "./logo.svg";
-import "./App.css";
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Header from "./Header";
+import Apidata from "./Apidata";
+import Editform from "./Editform";
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello React</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Apidata />} />
+          <Route path="/edit" element={<Editform />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
-
-export default App;
