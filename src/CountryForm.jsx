@@ -1,12 +1,17 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import Apidata from "./Apidata";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function Editform() {
+function CountryForm() {
+  const location = useLocation();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       country_name: "",
@@ -23,29 +28,69 @@ function Editform() {
     }),
 
     onSubmit: (values) => {
-      console.log(values);
-      formik.resetForm();
-      handleClick();
-      addData();
+      console.log("Values", values);
+      if (location.pathname === "/addCountry") {
+        addNewCountry(values);
+      } else updateCountryData(values);
     },
   });
-  const addData = async () => {
-    const data = formik.values;
+
+  async function fetchCountryById() {
     try {
-      await axios.post("https://api.metaestate.ai/api/v1/country", data);
+      const response = await axios.get(
+        `https://api.metaestate.ai/api/v1/country/getCountryByID?country_id=${id}`
+      );
+      formik.setFieldValue("country_name", response.data.data.country_name);
+      formik.setFieldValue("currency_name", response.data.data.currency_name);
+      formik.setFieldValue("currency_code", response.data.data.currency_code);
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const addNewCountry = async (data) => {
+    try {
+      const response = await axios.post(
+        "https://api.metaestate.ai/api/v1/country",
+        data
+      );
+      console.log(response);
+      formik.resetForm();
+      toast(response.data.message);
+      navigate("/");
+    } catch (error) {
+      toast(error.response.data.message);
+      console.log(error);
+    }
   };
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate("/");
-  };
+
+  async function updateCountryData(data) {
+    try {
+      const response = await axios.put(
+        `https://api.metaestate.ai/api/v1/country/${id}`,
+        data
+      );
+      formik.resetForm();
+      navigate("/");
+      toast(response.data.message);
+    } catch (error) {
+      toast(error.response.data.message);
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (location.pathname !== "/addCountry") {
+      fetchCountryById();
+    }
+  }, [location.pathname]);
 
   return (
     <div>
       <Container className="col-md-6">
-        <h1 className="text-center m-4">Edit Data</h1>
+        <h1 className="text-center m-4">
+          {location.pathname === "/addCountry" ? "Add New " : "Edit"} Country
+        </h1>
         <form onSubmit={formik.handleSubmit}>
           <label className="form-label">country_name</label>
           <input
@@ -89,7 +134,7 @@ function Editform() {
           ) : null}
           <br />
           <Button type="submit" className="w-50 offset-md-3 mt-3">
-            Submit Data
+            {location.pathname === "/addCountry" ? "Submit" : "Update"} Data
           </Button>
         </form>
       </Container>
@@ -97,4 +142,4 @@ function Editform() {
   );
 }
 
-export default Editform;
+export default CountryForm;

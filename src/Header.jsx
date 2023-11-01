@@ -27,10 +27,10 @@ function Header() {
               navbarScroll
             >
               <Nav.Link>
-                <Link to="/"> Tables </Link>
+                <Link to="/"> Country </Link>
               </Nav.Link>
               <Nav.Link>
-                <Link to="/edit"> Add Data </Link>
+                <Link to="/state"> State </Link>
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
