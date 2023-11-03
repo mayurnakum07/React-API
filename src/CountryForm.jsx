@@ -1,13 +1,13 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import React, { useEffect } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Spinner } from "react-bootstrap";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function CountryForm() {
+function CountryForm({ loading, setLoading }) {
   const location = useLocation();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,12 +28,29 @@ function CountryForm() {
     }),
 
     onSubmit: (values) => {
-      console.log("Values", values);
+      console.log("Submitting-Country", values);
       if (location.pathname === "/addCountry") {
         addNewCountry(values);
       } else updateCountryData(values);
     },
   });
+
+  const addNewCountry = async (data) => {
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "https://api.metaestate.ai/api/v1/country",
+        data
+      );
+      formik.resetForm();
+      toast(response.data.message);
+      navigate("/");
+    } catch (error) {
+      toast(error.response.data.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   async function fetchCountryById() {
     try {
@@ -44,28 +61,13 @@ function CountryForm() {
       formik.setFieldValue("currency_name", response.data.data.currency_name);
       formik.setFieldValue("currency_code", response.data.data.currency_code);
     } catch (error) {
-      console.log(error);
+      toast(error.message);
     }
   }
 
-  const addNewCountry = async (data) => {
-    try {
-      const response = await axios.post(
-        "https://api.metaestate.ai/api/v1/country",
-        data
-      );
-      console.log(response);
-      formik.resetForm();
-      toast(response.data.message);
-      navigate("/");
-    } catch (error) {
-      toast(error.response.data.message);
-      console.log(error);
-    }
-  };
-
   async function updateCountryData(data) {
     try {
+      setLoading(true);
       const response = await axios.put(
         `https://api.metaestate.ai/api/v1/country/${id}`,
         data
@@ -75,7 +77,8 @@ function CountryForm() {
       toast(response.data.message);
     } catch (error) {
       toast(error.response.data.message);
-      console.log(error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -134,7 +137,16 @@ function CountryForm() {
           ) : null}
           <br />
           <Button type="submit" className="w-50 offset-md-3 mt-3">
-            {location.pathname === "/addCountry" ? "Submit" : "Update"} Data
+            {loading ? (
+              <div className="d-flex gap-2 align-items-center justify-content-center">
+                <Spinner animation="border" role="status"></Spinner>
+                <span> Loading...</span>
+              </div>
+            ) : (
+              <div>
+                {location.pathname === "/addCountry" ? "Submit" : "Update"} Data
+              </div>
+            )}
           </Button>
         </form>
       </Container>

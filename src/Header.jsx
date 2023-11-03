@@ -2,7 +2,9 @@ import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import "./Header.css";
 import { Link } from "react-router-dom";
+import { useDarkMode } from "./Theme.jsx";
 function Header() {
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
   return (
     <div>
       <Navbar
@@ -32,7 +34,23 @@ function Header() {
               <Nav.Link>
                 <Link to="/state"> State </Link>
               </Nav.Link>
+              <Nav.Link>
+                <Link to="/city"> City </Link>
+              </Nav.Link>
             </Nav>
+            <div
+              className="cart-icon form-check-reverse form-switch"
+              style={{ color: "white", fontSize: "20px" }}
+            >
+              <label className="form-check-label">
+                {isDarkMode ? "Dark" : "Light"} Mode
+              </label>
+              <input
+                onClick={toggleDarkMode}
+                className="form-check-input"
+                type="checkbox"
+              />
+            </div>
           </Navbar.Collapse>
         </Container>
       </Navbar>

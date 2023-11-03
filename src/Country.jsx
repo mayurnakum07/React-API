@@ -1,28 +1,26 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
-import ReactLoader from "react-loader";
+import { Button, Container, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import "./App.css";
 
-function Country() {
+function Country({ loading, setLoading, btnLoading, setBtnLoading, theme }) {
   const [countryData, setCountryData] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  async function feachCountryData() {
+  const feachCountryData = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
         "https://api.metaestate.ai/api/v1/country"
       );
       setCountryData(response.data.data);
-      // toast("All Apis are Feached");
     } catch (error) {
-      console.log("Error", error);
+      toast("Api Not Feached");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     feachCountryData();
@@ -30,6 +28,7 @@ function Country() {
 
   const deleteCountry = async (id) => {
     try {
+      setBtnLoading(id);
       const response = await axios.delete(
         `https://api.metaestate.ai/api/v1/country/${id}`
       );
@@ -37,7 +36,8 @@ function Country() {
       toast(response.data.message);
     } catch (error) {
       toast(error.response.data.message);
-      console.log("Error", error);
+    } finally {
+      setBtnLoading(null);
     }
   };
 
@@ -45,67 +45,80 @@ function Country() {
     <div>
       <Container>
         <h1 className="text-center mt-4">Countrys & Currency</h1>
-        <Link to="/addCountry">
-          <Button className="mb-3 float-end">Add New Data</Button>
-        </Link>
-        <br />
-        <table className="table table-hover table-bordered text-center ">
-          <thead className="table-primary">
-            <tr>
-              <th>ID</th>
-              <th>country-name</th>
-              <th>currency-name</th>
-              <th>currency-code</th>
-              <th>Edit</th>
-              <th>Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <div
-                style={{ position: "absolute", right: "50%" }}
-                className="mt-5"
-              >
-                <ReactLoader type="infinite spinner"></ReactLoader>
-              </div>
-            ) : (
-              countryData.map((item) => (
-                <tr key={item.country_id}>
-                  <th>{item.country_id}</th>
-                  <td>{item.country_name}</td>
-                  <td>{item.currency_name}</td>
-                  <td>{item.currency_code}</td>
-                  <td>
-                    <Link
-                      to={`/updateCountry/${item.country_id}`}
-                      className="text-white"
-                    >
-                      <Button>
-                        Edit{" "}
-                        <i
-                          className="fa-solid fa-pen-to-square"
-                          style={{ color: "white" }}
-                        ></i>
-                      </Button>
-                    </Link>
-                  </td>
-                  <td>
-                    <Button
-                      onClick={() => deleteCountry(item.country_id)}
-                      className="bg-danger"
-                    >
-                      Delete{" "}
-                      <i
-                        className="fa-solid fa-trash"
-                        style={{ color: "white" }}
-                      ></i>
-                    </Button>
-                  </td>
+        {loading ? (
+          <div style={{ position: "absolute", right: "50%" }}>
+            <div className="loader-container">
+              <div className="loader"></div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <Link to="/addCountry">
+              <Button className="mb-3 float-end">Add New Data</Button>
+            </Link>
+            <br />
+            <table
+              className={`table ${
+                theme && "table-dark"
+              } table-hover table-bordered text-center`}
+            >
+              <thead className="table-primary">
+                <tr>
+                  <th>ID</th>
+                  <th>country-name</th>
+                  <th>currency-name</th>
+                  <th>currency-code</th>
+                  <th>Edit</th>
+                  <th>Delete</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody>
+                {countryData.map((item) => (
+                  <tr key={item.country_id}>
+                    <th>{item.country_id}</th>
+                    <td>{item.country_name}</td>
+                    <td>{item.currency_name}</td>
+                    <td>{item.currency_code}</td>
+                    <td>
+                      <Link
+                        to={`/updateCountry/${item.country_id}`}
+                        className="text-white"
+                      >
+                        <Button>
+                          Edit{" "}
+                          <i
+                            className="fa-solid fa-pen-to-square"
+                            style={{ color: "white" }}
+                          ></i>
+                        </Button>
+                      </Link>
+                    </td>
+                    <td>
+                      <Button
+                        onClick={() => deleteCountry(item.country_id)}
+                        className="bg-danger"
+                        disabled={btnLoading === item.country_id}
+                      >
+                        {btnLoading === item.country_id ? (
+                          <Spinner animation="border" size="sm"></Spinner>
+                        ) : (
+                          <div>
+                            Delete{" "}
+                            <i
+                              className="fa-solid fa-trash"
+                              style={{ color: "white" }}
+                            ></i>
+                          </div>
+                        )}
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <br />
+          </div>
+        )}
       </Container>
     </div>
   );
