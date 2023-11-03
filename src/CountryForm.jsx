@@ -43,16 +43,16 @@ function CountryForm({ loading, setLoading }) {
         data
       );
       formik.resetForm();
-      toast(response.data.message);
+      toast.success(response.data.message);
       navigate("/");
     } catch (error) {
-      toast(error.response.data.message);
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
   };
 
-  async function fetchCountryById() {
+  const fetchCountryById = async () => {
     try {
       const response = await axios.get(
         `https://api.metaestate.ai/api/v1/country/getCountryByID?country_id=${id}`
@@ -61,11 +61,11 @@ function CountryForm({ loading, setLoading }) {
       formik.setFieldValue("currency_name", response.data.data.currency_name);
       formik.setFieldValue("currency_code", response.data.data.currency_code);
     } catch (error) {
-      toast(error.message);
+      toast.error(error.message);
     }
-  }
+  };
 
-  async function updateCountryData(data) {
+  const updateCountryData = async (data) => {
     try {
       setLoading(true);
       const response = await axios.put(
@@ -74,13 +74,13 @@ function CountryForm({ loading, setLoading }) {
       );
       formik.resetForm();
       navigate("/");
-      toast(response.data.message);
+      toast.success(response.data.message);
     } catch (error) {
-      toast(error.response.data.message);
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (location.pathname !== "/addCountry") {
@@ -149,6 +149,7 @@ function CountryForm({ loading, setLoading }) {
             )}
           </Button>
         </form>
+          <br />
       </Container>
     </div>
   );

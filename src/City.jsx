@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Button, Container } from "react-bootstrap";
+import { Button, Container, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function City({ loading, setLoading, theme }) {
+function City({ loading, setLoading, btnLoading, setBtnLoading, theme }) {
   const [cityData, setCityData] = useState([]);
 
   const feachCityData = async () => {
@@ -13,15 +13,29 @@ function City({ loading, setLoading, theme }) {
       const response = await axios.get("https://api.metaestate.ai/api/v1/city");
       setCityData(response.data.data);
     } catch (error) {
-      toast(error.messge);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     feachCityData();
   }, []);
+
+  const deleteCityData = async (id) => {
+    try {
+      setBtnLoading(id);
+      const response = await axios.delete(
+        `https://api.metaestate.ai/api/v1/city/${id}`
+      );
+      feachCityData();
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setBtnLoading(null);
+    }
+  };
 
   return (
     <div>
@@ -73,12 +87,22 @@ function City({ loading, setLoading, theme }) {
                       </Link>
                     </td>
                     <td>
-                      <Button className="bg-danger">
-                        Delete{" "}
-                        <i
-                          className="fa-solid fa-trash"
-                          style={{ color: "white" }}
-                        ></i>
+                      <Button
+                        className="bg-danger"
+                        onClick={() => deleteCityData(item.city_id)}
+                        disabled={btnLoading === item.city_id}
+                      >
+                        {btnLoading === item.city_id ? (
+                          <Spinner animation="border" size="sm"></Spinner>
+                        ) : (
+                          <div>
+                            Delete{" "}
+                            <i
+                              className="fa-solid fa-trash"
+                              style={{ color: "white" }}
+                            ></i>
+                          </div>
+                        )}
                       </Button>
                     </td>
                   </tr>

@@ -7,20 +7,19 @@ import { Link } from "react-router-dom";
 function State({ loading, setLoading, btnLoading, setBtnLoading, theme }) {
   const [stateData, setStateData] = useState([]);
 
-  async function feachStateData() {
+  const feachStateData = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
         " https://api.metaestate.ai/api/v1/state"
       );
       setStateData(response.data.data);
-      console.log("states", response);
     } catch (error) {
-      toast(error.message);
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
-  }
+  };
   useEffect(() => {
     feachStateData();
   }, []);
@@ -32,9 +31,9 @@ function State({ loading, setLoading, btnLoading, setBtnLoading, theme }) {
         ` https://api.metaestate.ai/api/v1/state/${id}`
       );
       feachStateData();
-      toast(response.data.message);
+      toast.success(response.data.message);
     } catch (error) {
-      toast(error.response.data.message);
+      toast.error(error.message);
     } finally {
       setBtnLoading(null);
     }

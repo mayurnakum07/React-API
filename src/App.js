@@ -91,6 +91,8 @@ export default function App() {
               <City
                 loading={loading}
                 setLoading={setLoading}
+                btnLoading={btnLoading}
+                setBtnLoading={setBtnLoading}
                 theme={isDarkMode}
               />
             }

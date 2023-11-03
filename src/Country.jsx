@@ -33,9 +33,9 @@ function Country({ loading, setLoading, btnLoading, setBtnLoading, theme }) {
         `https://api.metaestate.ai/api/v1/country/${id}`
       );
       feachCountryData();
-      toast(response.data.message);
+      toast.success(response.data.message);
     } catch (error) {
-      toast(error.response.data.message);
+      toast.error(error.message);
     } finally {
       setBtnLoading(null);
     }

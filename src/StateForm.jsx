@@ -29,16 +29,16 @@ function StateForms({ loading, setLoading }) {
     },
   });
 
-  async function feachCountryData() {
+  const feachCountryData = async () => {
     try {
       const response = await axios.get(
         " https://api.metaestate.ai/api/v1/country"
       );
       setCountryData(response.data.data);
     } catch (error) {
-      toast(error.message);
+      toast.error(error.message);
     }
-  }
+  };
   useEffect(() => {
     feachCountryData();
   }, []);
@@ -54,10 +54,10 @@ function StateForms({ loading, setLoading }) {
         }
       );
       formik.resetForm();
-      toast(response.data.message);
+      toast.success(response.data.message);
       navigate("/state");
     } catch (error) {
-      toast(error.response.data.message);
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -74,7 +74,7 @@ function StateForms({ loading, setLoading }) {
       );
       formik.setFieldValue("state_name", response.data.data.state_name);
     } catch (error) {
-      toast(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -85,10 +85,10 @@ function StateForms({ loading, setLoading }) {
         `https://api.metaestate.ai/api/v1/state/${id}`,
         data
       );
-      toast(response.data.message);
+      toast.success(response.data.message);
       navigate("/state");
     } catch (error) {
-      toast(error.response.data.message);
+      toast.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -153,6 +153,7 @@ function StateForms({ loading, setLoading }) {
             )}
           </Button>
         </form>
+          <br />
       </Container>
     </div>
   );
