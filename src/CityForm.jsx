@@ -20,9 +20,9 @@ function CityForm({ loading, setLoading }) {
       city_name: "",
     },
     validationSchema: Yup.object({
-      country_id: Yup.string().required("Country is required"),
-      state_id: Yup.string().required("State is required"),
-      city_name: Yup.string().required("City name is required"),
+      country_id: Yup.string().trim().min(2).max(20).required(),
+      state_id: Yup.string().trim().min(2).max(20).required(),
+      city_name: Yup.string().trim().min(2).max(20).required(),
     }),
     onSubmit: (values) => {
       console.log("submitted-citys", values);

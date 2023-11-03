@@ -109,6 +109,7 @@ function City({ loading, setLoading, btnLoading, setBtnLoading, theme }) {
                 ))}
               </tbody>
             </table>
+            <br />
           </div>
         )}
       </Container>

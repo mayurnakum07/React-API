@@ -19,12 +19,9 @@ function CountryForm({ loading, setLoading }) {
       currency_code: "",
     },
     validationSchema: Yup.object({
-      country_name: Yup.string().required("country name is required"),
-      currency_name: Yup.string().required("currency name is required"),
-      currency_code: Yup.string()
-        .min(5, "code choose only 5 digit")
-        .max(5, "code choose only 5 digit")
-        .required("currency code is required"),
+      country_name: Yup.string().trim().min(2).max(20).required(),
+      currency_name: Yup.string().trim().min(2).max(20).required(),
+      currency_code: Yup.number().positive().min(11111).max(99999).integer().required(),
     }),
 
     onSubmit: (values) => {
@@ -149,7 +146,7 @@ function CountryForm({ loading, setLoading }) {
             )}
           </Button>
         </form>
-          <br />
+        <br />
       </Container>
     </div>
   );

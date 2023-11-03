@@ -18,8 +18,8 @@ function StateForms({ loading, setLoading }) {
       state_name: "",
     },
     validationSchema: Yup.object({
-      country_id: Yup.string().required("Country name is Required"),
-      state_name: Yup.string().required("State name is Required"),
+      country_id: Yup.string().trim().min(2).max(20).required(),
+      state_name: Yup.string().trim().min(2).max(20).required(),
     }),
     onSubmit: (values) => {
       console.log("submitted-State", values);
