@@ -16,7 +16,7 @@ function Country({ loading, setLoading, btnLoading, setBtnLoading, theme }) {
       );
       setCountryData(response.data.data);
     } catch (error) {
-      toast("Api Not Feached");
+      toast.error("Api Not Feached");
     } finally {
       setLoading(false);
     }
