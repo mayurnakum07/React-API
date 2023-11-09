@@ -41,7 +41,7 @@ function CountryForm({ loading, setLoading }) {
       );
       formik.resetForm();
       toast.success(response.data.message);
-      navigate("/");
+      navigate("/country");
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -70,7 +70,7 @@ function CountryForm({ loading, setLoading }) {
         data
       );
       formik.resetForm();
-      navigate("/");
+      navigate("/country");
       toast.success(response.data.message);
     } catch (error) {
       toast.error(error.response.data.message);

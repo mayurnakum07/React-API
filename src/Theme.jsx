@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 const DarkModeContext = createContext();
 
@@ -13,17 +12,6 @@ export const Usecontext = ({ children }) => {
   const toggleDarkMode = () => {
     setIsDarkMode((e) => !e);
   };
-
-  // const themeChange = () => {
-  //   if (isDarkMode === false) {
-  //     toast("Theme is Light");
-  //   } else {
-  //     toast("Theme is Dark");
-  //   }
-  // };
-  // useEffect(() => {
-  //   themeChange();
-  // });
 
   return (
     <div>

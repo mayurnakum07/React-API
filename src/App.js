@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Header from "./Header";
 import Country from "./Country";
@@ -15,8 +15,17 @@ export default function App() {
   const [btnLoading, setBtnLoading] = useState(null);
   const { isDarkMode } = useDarkMode();
 
+  useEffect(() => {
+    document.body.className = isDarkMode ? "Dark-mode" : "Light-mode";
+
+    // Optionally, you can add cleanup to remove the class when the component unmounts
+    return () => {
+      document.body.className = "";
+    };
+  }, [isDarkMode]);
+
   return (
-    <div className={`${isDarkMode ? "Dark-mode" : "Light-mode"}`}>
+    <div>
       <BrowserRouter>
         <ToastContainer />
         <Header />
